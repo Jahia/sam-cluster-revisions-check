@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jahia-modules</artifactId>
+        <groupId>org.jahia.modules</groupId>
+        <version>8.1.1.1</version>
+    </parent>
+    <groupId>org.jahia.community</groupId>
+    <artifactId>sam-cluster-revisions-check</artifactId>
+    <name>Server Availability Manager - Cluster Revisions Check</name>
+    <version>1.0.2-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <description>The purpose of this module is to add a probe to the Server Availability Manager to check if the SSL certificates used for a website are valid and are not going to expire in the next 7 days.
+    </description>
+    
+    <scm>
+        <connection>scm:git:git@github.com:Jahia/sam-ssl-check.git</connection>
+        <developerConnection>scm:git:git@github.com:Jahia/sam-ssl-check.git</developerConnection>
+        <url>scm:git:git@github.com:Jahia/sam-ssl-check.git</url>
+        <tag>HEAD</tag>
+    </scm>
+    
+    <properties>
+        <export-package>org.jahia.community.sam.sslcheck</export-package>
+        <jahia-depends>default,server-availability-manager</jahia-depends>
+        <jahia-deploy-on-site>system</jahia-deploy-on-site>
+        <jahia-module-type>system</jahia-module-type>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jahia-public</id>
+            <name>Jahia Public Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <_dsannotations>*</_dsannotations>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>server-availability-manager</artifactId>
+            <version>2.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.graphql-java</groupId>
+            <artifactId>graphql-java-annotations</artifactId>
+            <version>${graphql-java-annotations.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
