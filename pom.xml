@@ -10,7 +10,7 @@
     <groupId>org.jahia.community</groupId>
     <artifactId>sam-cluster-revisions-check</artifactId>
     <name>Server Availability Manager - Cluster Revisions Check</name>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <description>The purpose of this module is to add a probe to the Server Availability Manager to check if the cluster revisions are in sync and not "blocked"</description>
     
@@ -18,7 +18,7 @@
         <connection>scm:git:git@github.com:Jahia/sam-cluster-revisions-check.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/sam-cluster-revisions-check.git</developerConnection>
         <url>scm:git:git@github.com:Jahia/sam-cluster-revisions-check.git</url>
-        <tag>1_0_0</tag>
+        <tag>HEAD</tag>
     </scm>
     
     <properties>
