@@ -28,6 +28,7 @@ public class ClusterRevisionsProbe implements Probe {
     private final ConnectionHelper connHelper;
     private long checkInterval = 15L;
     private long lastCheckTimestamp = Long.MIN_VALUE;
+    private ProbeStatus status=new ProbeStatus("Cluster revisions are in-sync", ProbeStatus.Health.GREEN);
 
     public ClusterRevisionsProbe() {
         connHelper = new ConnectionHelper(DatabaseUtils.getDatasource(), false);
@@ -45,7 +46,6 @@ public class ClusterRevisionsProbe implements Probe {
 
     @Override
     public ProbeStatus getStatus() {
-        ProbeStatus status = new ProbeStatus("Cluster revisions are in-sync", ProbeStatus.Health.GREEN);
         final long currentCheckTimestamp = System.currentTimeMillis();
 
         if (currentCheckTimestamp >= lastCheckTimestamp + checkInterval * 1000L) {
@@ -62,8 +62,11 @@ public class ClusterRevisionsProbe implements Probe {
                             status = new ProbeStatus(String.format("The following node seems out-of-sync: %s (%s)", lastJournalId, lastRevisionId.toString()), ProbeStatus.Health.RED);
                         } else {
                             lastJournalId = journalId;
-                            lastRevisionId = revisionId; 
+                            lastRevisionId = revisionId;
+                            status = new ProbeStatus("Cluster revisions are in-sync", ProbeStatus.Health.GREEN);
                         }
+                    } else {
+                        status = new ProbeStatus("Cluster revisions are in-sync", ProbeStatus.Health.GREEN);
                     }
                 } finally {
                     DbUtility.close(rs);
