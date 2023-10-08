@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 public class ClusterRevisionsProbe implements Probe {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClusterRevisionsProbe.class);
+    private static final String PROP_SCHEMA_OBJECT_PREFIX = "schemaObjectPrefix";
+    private static final String PROP_CHECK_INTERVAL = "checkInterval";
     private Long lastRevisionId = Long.MAX_VALUE;
     private String lastJournalId = "";
     private String schemaObjectPrefix = "JR_J_";
@@ -26,7 +28,7 @@ public class ClusterRevisionsProbe implements Probe {
     private final ConnectionHelper connHelper;
     private long checkInterval = 15L;
     private long lastCheckTimestamp = Long.MIN_VALUE;
-//INSERT INTO JR_J_LOCAL_REVISIONS (JOURNAL_ID,REVISION_ID) VALUES('test', 1)
+
     public ClusterRevisionsProbe() {
         connHelper = new ConnectionHelper(DatabaseUtils.getDatasource(), false);
     }
@@ -43,7 +45,7 @@ public class ClusterRevisionsProbe implements Probe {
 
     @Override
     public ProbeStatus getStatus() {
-        ProbeStatus status = new ProbeStatus("Cluster revisions is sync", ProbeStatus.Health.GREEN);
+        ProbeStatus status = new ProbeStatus("Cluster revisions are in-sync", ProbeStatus.Health.GREEN);
         final long currentCheckTimestamp = System.currentTimeMillis();
 
         if (currentCheckTimestamp >= lastCheckTimestamp + checkInterval * 1000L) {
@@ -60,7 +62,7 @@ public class ClusterRevisionsProbe implements Probe {
                             status = new ProbeStatus(String.format("The following node seems out-of-sync: %s (%s)", lastJournalId, lastRevisionId.toString()), ProbeStatus.Health.RED);
                         } else {
                             lastJournalId = journalId;
-                            lastRevisionId = revisionId;
+                            lastRevisionId = revisionId; 
                         }
                     }
                 } finally {
@@ -81,13 +83,13 @@ public class ClusterRevisionsProbe implements Probe {
 
     @Override
     public void setConfig(Map<String, Object> config) {
-        if (config.containsKey("check_interval")) {
-            checkInterval = Long.parseLong(config.get("check_interval").toString());
+        if (config.containsKey(PROP_CHECK_INTERVAL)) {
+            checkInterval = Long.parseLong(config.get(PROP_CHECK_INTERVAL).toString());
         }
-        if (config.containsKey("schemaObjectPrefix")) {
-            schemaObjectPrefix = config.get("schemaObjectPrefix").toString();
+        if (config.containsKey(PROP_SCHEMA_OBJECT_PREFIX)) {
+            schemaObjectPrefix = config.get(PROP_SCHEMA_OBJECT_PREFIX).toString();
         }
-        sqlStmtSelectGlobalRevision = "select REVISION_ID from " + schemaObjectPrefix + "GLOBAL_REVISION";
+        sqlStmtSelectGlobalRevision = "SELECT REVISION_ID FROM " + schemaObjectPrefix + "GLOBAL_REVISION";
         sqlStmtSelectMinimumRevision = "SELECT JOURNAL_ID, REVISION_ID FROM " + schemaObjectPrefix + "LOCAL_REVISIONS WHERE REVISION_ID < ? ORDER BY REVISION_ID ASC";
     }
 
